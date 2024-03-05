@@ -57,6 +57,7 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     environment: production
+    working-directory: /iCapital/AWS
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -81,9 +82,6 @@ jobs:
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -check
-
-    - name: Mudar para o diretório de trabalho
-      run: cd iCapital/AWS
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
