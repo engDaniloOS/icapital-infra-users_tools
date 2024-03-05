@@ -83,7 +83,7 @@ jobs:
       run: terraform fmt -check
 
     - name: Mudar para o diretório de trabalho
-      run: cd ~/iCapital/AWS
+      run: cd iCapital/AWS
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
