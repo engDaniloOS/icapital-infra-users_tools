@@ -1,6 +1,6 @@
 ##Criação do bucket para servir arquivos estáticos
 resource "aws_s3_bucket" "static_site_users_tools"{
-    bucket = "static_site_${var.bucket_name}"
+    bucket = "this_is_a_bucket_abc_static_site_${var.bucket_name}"
 
     website {
       index_document = "index.html"
