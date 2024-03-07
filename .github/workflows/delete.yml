@@ -1,37 +1,33 @@
-name: 'Delete resource'
-
-on:
-  issues:
-    types:
-      - opened
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
-
-      - name: Extract Resource ARN from Issue
-        run: |
-          TAG_NAME=$(echo "${{ github.event.issue.title }}")
-          echo "TAG $TAG_NAME"
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-
-      - name: Run Terraform
-        run: |
-          terraform init
-          terraform destroy -tags="Name=$TAG_NAME"
-
-      - name: Add comment
-        run: gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "Recurso excluído com sucesso"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+---
+  name: Delete resource
+  on:
+    issues:
+      types:
+        - opened
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v2
+        - name: Set up AWS CLI
+          uses: aws-actions/configure-aws-credentials@v2
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+        - name: Extract Tag name from Issue
+          run: |
+            TAG_NAME=$(echo "${{ github.event.issue.title }}")
+            echo "TAG $TAG_NAME"
+            echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        - name: Run Terraform
+          run: |
+            terraform init
+            terraform destroy -tags="Name=$TAG_NAME"
+        - name: Add comment
+          run: gh issue comment "${{ github.event.issue.number }}" --repo "${{
+            github.repository }}" --body "Recurso excluído com sucesso"
+          env:
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+  
