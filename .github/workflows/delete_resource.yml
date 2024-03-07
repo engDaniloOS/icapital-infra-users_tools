@@ -1,4 +1,4 @@
-name: Delete resource
+name: 'Delete resource'
 
 on:
   issues:
