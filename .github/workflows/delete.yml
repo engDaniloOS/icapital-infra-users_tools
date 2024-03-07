@@ -2,8 +2,7 @@
   name: Delete resource
   on:
     issues:
-      types:
-        - opened
+      types: [opened]
   jobs:
     deploy:
       runs-on: ubuntu-latest
