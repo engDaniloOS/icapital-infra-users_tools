@@ -22,20 +22,16 @@ jobs:
 
       - name: Extract Resource ARN from Issue
         run: |
-          export TAG_NAME=$(echo "${{ github.event.issue.title }}")
+          TAG_NAME=$(echo "${{ github.event.issue.title }}")
           echo "TAG $TAG_NAME"
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
       - name: Run Terraform
         run: |
           terraform init
-          terraform destroy -tags="Name=${{ env.TAG_NAME }}"
+          terraform destroy -tags="Name=$TAG_NAME"
 
       - name: Add comment
-        run: gh issue comment "$NUMBER" --repo "$REPO" --body "$BODY"
+        run: gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "Recurso excluído com sucesso"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.repository }}
-          BODY: >
-            Recurso excluído com sucesso
