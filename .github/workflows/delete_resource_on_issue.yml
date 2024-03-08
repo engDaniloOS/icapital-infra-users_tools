@@ -1,0 +1,30 @@
+name: Delete AWS Resources by Tag
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  delete-resources:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Extract Tag Name from Issue Title
+        run: |
+          TAG_NAME=$(echo "${{ github.event.issue.title }}")
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Run Terraform Destroy
+        run: |
+          terraform init
+          terraform destroy -auto-approve -tags="Name=$TAG_NAME"
