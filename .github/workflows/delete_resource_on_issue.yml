@@ -19,13 +19,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Extract Tag Name from Issue Title
+      - name: Extract Tag Name, Target, and Comment Body
         run: |
-          TAG_NAME=$(echo "${{ github.event.issue.title }}")
+          COMMENT_BODY=$(echo "${{ github.event.comment.body }}")
+          TAG_NAME=$(echo "$COMMENT_BODY" | grep -oP 'Tag:\s*\K\S+')
+          TARGET=$(echo "$COMMENT_BODY" | grep -oP 'Target:\s*\K\S+')
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          echo "TARGET=$TARGET" >> $GITHUB_ENV
 
       - name: Run Terraform Destroy
         run: |
           terraform init
-          terraform destroy -auto-approve -target="*aws_*" -var="tag_name=$TAG_NAME"
+          terraform destroy -auto-approve -target="$TARGET" -var="tag_name=$TAG_NAME"
         working-directory: iCapital/AWS
