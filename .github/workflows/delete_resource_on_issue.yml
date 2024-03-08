@@ -19,10 +19,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Extrair TAG e Target da Descrição da Issue
+      - name: Extrair TAG
         run: |
           TAG_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'TAG:\s+.+' | cut -d' ' -f2)
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Extrair TARGET
+        run: |
           TARGET_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'TARGET:\s+.+' | cut -d' ' -f2)
           echo "TARGET_NAME=$TARGET_NAME" >> $GITHUB_ENV
 
