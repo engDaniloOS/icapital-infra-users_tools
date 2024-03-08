@@ -28,3 +28,4 @@ jobs:
         run: |
           terraform init
           terraform destroy -auto-approve -tags="Name=$TAG_NAME"
+        working-directory: iCapital/AWS
