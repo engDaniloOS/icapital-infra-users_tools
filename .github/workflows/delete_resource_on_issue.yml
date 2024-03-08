@@ -1,4 +1,4 @@
-name: Delete AWS Resources by Tag
+name: 'icapital-infra-user-tools-delete-on-issue'
 
 on:
   issues:
