@@ -23,8 +23,8 @@ jobs:
         run: |
           TAG_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'TAG:\s+.+' | cut -d' ' -f2)
           TARGET_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'TARGET:\s+.+' | cut -d' ' -f2)
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-          echo "TARGET_NAME=$TARGET_NAME" >> $GITHUB_ENV
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV_1
+          echo "TARGET_NAME=$TARGET_NAME" >> $GITHUB_ENV_2
 
       - name: Run Terraform Destroy
         run: |
