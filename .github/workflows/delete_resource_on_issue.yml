@@ -20,8 +20,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Extrair Target da descricao
+        run: |
+          TARGET_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'ARN:\s+.+' | cut -d' ' -f2)
+          echo "TARGET_NAME=$TARGET_NAME" >> $GITHUB_ENV
+
       - name: Run Terraform Destroy
         working-directory: iCapital/AWS
         run: |
           terraform init
-          terraform destroy -auto-approve
+          terraform destroy -auto-approve target="$TARGET_NAME"
