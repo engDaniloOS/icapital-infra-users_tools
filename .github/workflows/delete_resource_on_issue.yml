@@ -29,4 +29,5 @@ jobs:
         working-directory: iCapital/AWS
         run: |
           terraform init
+          terraform plan -input=false
           terraform destroy -auto-approve target="$TARGET_NAME"
