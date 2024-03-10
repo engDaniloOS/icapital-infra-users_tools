@@ -21,13 +21,11 @@ jobs:
 
       - name: Extrair TAG e Target da Descrição da Issue
         run: |
-          TAG_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'TAG:\s+.+' | cut -d' ' -f2)
           TARGET_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'TARGET:\s+.+' | cut -d' ' -f2)
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
           echo "TARGET_NAME=$TARGET_NAME" >> $GITHUB_ENV
 
       - name: Run Terraform Destroy
         run: |
           terraform init
-          terraform destroy -auto-approve target="$TARGET_NAME" tags="Name=$TAG_NAME"
+          terraform destroy -auto-approve target="$TARGET_NAME"
         working-directory: iCapital/AWS
