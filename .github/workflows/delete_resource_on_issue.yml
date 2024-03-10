@@ -6,6 +6,7 @@ on:
 
 jobs:
   delete-resources:
+    if: startsWith(github.event.issue.title, 'Delete')
     runs-on: ubuntu-latest
     
     steps:
@@ -19,13 +20,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Extrair TAG e Target da Descrição da Issue
+      - name: Extrair ARN da descricao da issue
         run: |
-          TARGET_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'TARGET:\s+.+' | cut -d' ' -f2)
-          echo "TARGET_NAME=$TARGET_NAME" >> $GITHUB_ENV
+          ARN_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'ARN:\s+.+' | cut -d' ' -f2)
+          echo "ARN_NAME=$ARN_NAME" >> $GITHUB_ENV
 
       - name: Run Terraform Destroy
         run: |
           terraform init
-          terraform destroy -auto-approve target="$TARGET_NAME"
+          terraform destroy -auto-approve -var "arn=$ARN_NAME"
         working-directory: iCapital/AWS
