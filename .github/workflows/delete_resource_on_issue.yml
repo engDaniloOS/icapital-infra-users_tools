@@ -20,13 +20,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Extrair ARN da descricao da issue
-        run: |
-          ARN_NAME=$(echo "${{ github.event.issue.body }}" | grep -o -E 'ARN:\s+.+' | cut -d' ' -f2)
-          echo "ARN_NAME=$ARN_NAME" >> $GITHUB_ENV
-
       - name: Run Terraform Destroy
+        working-directory: iCapital/AWS
         run: |
           terraform init
-          terraform destroy -auto-approve -var "arn=$ARN_NAME"
-        working-directory: iCapital/AWS
+          terraform destroy -auto-approve
