@@ -29,5 +29,5 @@ jobs:
       - name: Run Terraform Destroy
         run: |
           terraform init
-          terraform destroy -auto-approve target="$TARGET_NAME" tag="$TAG_NAME"
+          terraform destroy -auto-approve -target="$TARGET_NAME" -var="feature=$TAG_NAME"
         working-directory: iCapital/AWS
