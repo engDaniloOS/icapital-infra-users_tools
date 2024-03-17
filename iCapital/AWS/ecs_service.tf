@@ -123,10 +123,32 @@
 #   }
 # }
 
+# resource "aws_ecs_service" "service" {
+#   name            = "icapital-service"
+#   cluster         = aws_ecs_cluster.icapital_user_tools.id
+#   task_definition = aws_ecs_task_definition.task_definition.arn
+#   desired_count   = 1
+#   launch_type = "FARGATE"
+
+#   network_configuration {
+#     subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+#   }
+
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.target_group.arn
+#     container_name   = "users_tools"
+#     container_port   = 8080
+#   }
+
+#   tags = {
+#     feat = "icapital-users-tools"
+#   }
+# }
+
 resource "aws_ecs_service" "service" {
   name            = "icapital-service"
-  cluster         = aws_ecs_cluster.icapital_user_tools.id
-  task_definition = aws_ecs_task_definition.task_definition.arn
+  cluster         = "icapital-user-tools"
+  task_definition = "arn:aws:ecs:us-east-1:372069373564:task-definition/icapital-task:8"
   desired_count   = 1
   launch_type = "FARGATE"
 
@@ -135,7 +157,7 @@ resource "aws_ecs_service" "service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.target_group.arn
+    target_group_arn = "arn:aws:elasticloadbalancing:us-east-1:372069373564:targetgroup/icapital-service-target-group/90ac97db1f242b83"
     container_name   = "users_tools"
     container_port   = 8080
   }
