@@ -8,6 +8,14 @@ data "aws_ecr_repository" "icapital_users_tools_ecr" {
   name = "icapital-users-tools"
 }
 
+resource "aws_ecs_cluster" "icapital_user_tools" {
+  name    = "icapital-user-tools"
+  
+  tags = {
+    feat = "icapital-users-tools"
+  }
+}
+
 resource "aws_iam_role" "icapital_task_role" {
   name = "icapital-task-role"
   assume_role_policy = jsonencode({
@@ -24,12 +32,12 @@ resource "aws_iam_role" "icapital_task_role" {
   })
 
   tags = {
-    icapital = "true"
+    feat = "icapital-users-tools"
   }
 }
 
 resource "aws_iam_policy" "ecs_task_policy" {
-  name = "ecs-task-policy"
+  name = "icapital-ecs-task-policy"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -89,7 +97,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   ])
 
   tags = {
-    icapital = "true"
+    feat = "icapital-users-tools"
   }
 }
 
@@ -104,6 +112,6 @@ resource "aws_ecs_service" "service" {
   }
 
   tags = {
-    icapital = "true"
+    feat = "icapital-users-tools"
   }
 }
