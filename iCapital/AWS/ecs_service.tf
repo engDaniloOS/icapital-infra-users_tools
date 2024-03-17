@@ -29,6 +29,27 @@ resource "aws_iam_role" "icapital_task_role" {
   }
 }
 
+resource "aws_iam_role_policy" "ecs_task_execution_policy" {
+  name   = "ecs_task_execution_policy"
+  role   = aws_iam_role.ecs_task_execution_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Action    = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "sts:AssumeRole",
+        ],
+        Resource  = "arn:aws:*:*:*:*"
+      }
+    ]
+  })
+}
+
 #Task definitions
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = "icapital-task"
@@ -37,6 +58,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   memory                   = 1024
   requires_compatibilities = ["FARGATE"]
 
+  execution_role_arn       = aws_iam_role.ecs_task_execution_policy.arn  # Usar a role criada acima
   task_role_arn            = aws_iam_role.icapital_task_role.arn      # Usar a role da tarefa criada acima
 
   container_definitions = jsonencode([
@@ -51,8 +73,18 @@ resource "aws_ecs_task_definition" "task_definition" {
           hostPort      = 8080,
           protocol      = "tcp",
         }
-      ]
-    }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          "awslogs-group"         = "user_tools",
+          "awslogs-region"        = "us-east-1",
+          "awslogs-stream-prefix" = "users_tools",
+          "awslogs-create-group"  = "true",
+          "awslogs-datetime-format" = "%Y-%m-%dT%H:%M:%SZ",
+        },
+      }
+    },
   ])
 
   tags = {
