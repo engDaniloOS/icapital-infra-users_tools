@@ -51,18 +51,8 @@ resource "aws_ecs_task_definition" "task_definition" {
           hostPort      = 8080,
           protocol      = "tcp",
         }
-      ],
-      logConfiguration = {
-        logDriver = "awslogs",
-        options = {
-          "awslogs-group"         = "user_tools",
-          "awslogs-region"        = "us-east-1",
-          "awslogs-stream-prefix" = "users_tools",
-          "awslogs-create-group"  = "true",
-          "awslogs-datetime-format" = "%Y-%m-%dT%H:%M:%SZ",
-        },
-      }
-    },
+      ]
+    }
   ])
 
   tags = {
