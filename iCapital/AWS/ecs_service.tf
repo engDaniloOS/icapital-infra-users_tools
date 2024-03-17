@@ -16,28 +16,6 @@ resource "aws_iam_role" "icapital_task_role" {
     Statement = [
       {
         Effect    = "Allow",
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com",
-        },
-        Action    = "sts:AssumeRole",
-      },
-    ],
-  })
-
-  tags = {
-    icapital = "true"
-  }
-}
-
-resource "aws_iam_role_policy" "ecs_task_execution_policy" {
-  name   = "ecs_task_execution_policy"
-  role   = aws_iam_role.icapital_task_role.name
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect    = "Allow",
         Action    = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
@@ -48,6 +26,10 @@ resource "aws_iam_role_policy" "ecs_task_execution_policy" {
       }
     ]
   })
+
+  tags = {
+    icapital = "true"
+  }
 }
 
 #Task definitions
@@ -58,7 +40,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   memory                   = 1024
   requires_compatibilities = ["FARGATE"]
 
-  execution_role_arn       = aws_iam_role.ecs_task_execution_policy.arn  # Usar a role criada acima
+  execution_role_arn       = aws_iam_role.icapital_task_role.arn  # Usar a role criada acima
   task_role_arn            = aws_iam_role.icapital_task_role.arn      # Usar a role da tarefa criada acima
 
   container_definitions = jsonencode([
