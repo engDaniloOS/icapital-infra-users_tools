@@ -96,6 +96,32 @@ resource "aws_ecs_task_definition" "task_definition" {
   }
 }
 
+resource "aws_lb" "public_lb" {
+  name               = "icapital-service-alb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+  enable_deletion_protection = false
+}
+
+resource "aws_lb_target_group" "target_group" {
+  name     = "icapital-service-target-group"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = "vpc-0b3d7c2f0a9a183c3"  # Substitua pelo ID da sua VPC
+}
+
+resource "aws_lb_listener" "listener" {
+  load_balancer_arn = aws_lb.public_lb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group.arn
+  }
+}
+
 resource "aws_ecs_service" "service" {
   name            = "icapital-service"
   cluster         = aws_ecs_cluster.icapital_user_tools.id
@@ -103,7 +129,13 @@ resource "aws_ecs_service" "service" {
   desired_count   = 1
 
   network_configuration {
-    subnets          = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]  # Substitua pelo ID da sua sub-rede
+    subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.target_group.arn
+    container_name   = "users_tools"
+    container_port   = 8080
   }
 
   tags = {
