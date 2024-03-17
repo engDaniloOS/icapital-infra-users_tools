@@ -31,7 +31,7 @@ resource "aws_iam_role" "icapital_task_role" {
 
 resource "aws_iam_role_policy" "ecs_task_execution_policy" {
   name   = "ecs_task_execution_policy"
-  role   = aws_iam_role.ecs_task_execution_role.name
+  role   = aws_iam_role.icapital_task_role.name
 
   policy = jsonencode({
     Version = "2012-10-17",
