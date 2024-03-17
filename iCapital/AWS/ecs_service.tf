@@ -108,6 +108,7 @@ resource "aws_lb_target_group" "target_group" {
   name     = "icapital-service-target-group"
   port     = 8080
   protocol = "HTTP"
+  target_type = "ip"
   vpc_id   = "vpc-0b3d7c2f0a9a183c3"
 }
 
