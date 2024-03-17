@@ -99,6 +99,10 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.task_definition.arn
   desired_count   = 1
 
+  network_configuration {
+    subnets          = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]  # Substitua pelo ID da sua sub-rede
+  }
+
   tags = {
     icapital = "true"
   }
