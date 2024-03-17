@@ -8,7 +8,6 @@ data "aws_ecr_repository" "icapital_users_tools_ecr" {
   name = "icapital-users-tools"
 }
 
-# Criar uma role do IAM para a tarefa ECS
 resource "aws_iam_role" "icapital_task_role" {
   name = "icapital-task-role"
   assume_role_policy = jsonencode({
@@ -16,20 +15,40 @@ resource "aws_iam_role" "icapital_task_role" {
     Statement = [
       {
         Effect    = "Allow",
-        Action    = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "sts:AssumeRole",
-        ],
-        Resource  = "arn:aws:*:*:*:*"
-      }
-    ]
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com",
+        },
+        Action    = "sts:AssumeRole",
+      },
+    ],
   })
 
   tags = {
     icapital = "true"
   }
+}
+
+resource "aws_iam_policy" "ecs_task_policy" {
+  name = "ecs-task-policy"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Action    = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+        ],
+        Resource  = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
+  role       = aws_iam_role.icapital_task_role.name
+  policy_arn = aws_iam_policy.ecs_task_policy.arn
 }
 
 #Task definitions
