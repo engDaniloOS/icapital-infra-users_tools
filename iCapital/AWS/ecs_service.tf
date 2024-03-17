@@ -98,7 +98,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 
 resource "aws_ecs_service" "service" {
   name            = "icapital-service"
-  cluster         = data.aws_ecs_cluster.icapital_cluster.id
+  cluster         = aws_ecs_cluster.icapital_user_tools.id
   task_definition = aws_ecs_task_definition.task_definition.arn
   desired_count   = 1
 
