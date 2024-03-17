@@ -1,8 +1,3 @@
-# Cluster já existente
-data "aws_ecs_cluster" "icapital_cluster" {
-  cluster_name = "icapital-user-tools"
-}
-
 # Recurso de dados para acessar o ECR criado em outro arquivo Terraform
 data "aws_ecr_repository" "icapital_users_tools_ecr" {
   name = "icapital-users-tools"
