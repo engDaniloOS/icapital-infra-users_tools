@@ -113,7 +113,7 @@ resource "aws_lb_target_group" "target_group" {
 
   health_check {
     path                = "/actuator/health"
-    port                = "traffic-port"
+    port                = "8080"
     protocol            = "HTTP"
     interval            = 30
     timeout             = 5
@@ -125,7 +125,7 @@ resource "aws_lb_target_group" "target_group" {
 
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_lb.public_lb.arn
-  port              = 8080
+  port              = 80
   protocol          = "HTTP"
 
   default_action {
