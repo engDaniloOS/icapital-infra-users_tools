@@ -89,8 +89,8 @@ resource "aws_ecs_task_definition" "task_definition" {
   family                   = "icapital-task"
   network_mode             = "awsvpc"
   cpu                      = 512
-  memory                   = 512
-  requires_compatibilities = ["FARGATE"]
+  memory                   = 1024
+  requires_compatibilities = ["FARGATE_SPOT"]
 
   execution_role_arn       = aws_iam_role.icapital_task_role.arn  # Usar a role criada acima
   task_role_arn            = aws_iam_role.icapital_task_role.arn      # Usar a role da tarefa criada acima
@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       name      = "users_tools",
       image     = data.aws_ecr_repository.icapital_users_tools_ecr.repository_url
       cpu       = 512,
-      memory    = 512,
+      memory    = 1024,
       portMappings = [
         {
           containerPort = 8080,
