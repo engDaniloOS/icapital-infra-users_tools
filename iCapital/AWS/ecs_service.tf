@@ -55,7 +55,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
 }
 
 resource "aws_iam_policy" "ecr_access_policy" {
-  name        = "ECRAccessPolicy"
+  name        = "icapital-ecr-read-policy"
   description = "Policy de acesso ao ECR"
   
   policy = jsonencode({
@@ -147,7 +147,6 @@ resource "aws_lb" "public_lb" {
   load_balancer_type = "application"
   subnets            = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
   enable_deletion_protection = false
-  security_groups = [aws_security_group.lb_security_group.arn]
 }
 
 resource "aws_lb_target_group" "target_group" {
