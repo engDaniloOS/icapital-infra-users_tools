@@ -89,7 +89,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   family                   = "icapital-task"
   network_mode             = "awsvpc"
   cpu                      = 512
-  memory                   = 1024
+  memory                   = 512
   requires_compatibilities = ["FARGATE"]
 
   execution_role_arn       = aws_iam_role.icapital_task_role.arn  # Usar a role criada acima
@@ -145,7 +145,7 @@ resource "aws_lb" "public_lb" {
   name               = "icapital-service-alb"
   internal           = false
   load_balancer_type = "application"
-  subnets            = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+  subnets            = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
   enable_deletion_protection = false
 }
 
@@ -191,7 +191,7 @@ resource "aws_ecs_service" "service" {
   launch_type = "FARGATE"
 
   network_configuration {
-    subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+    subnets = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
   }
 
   load_balancer {
