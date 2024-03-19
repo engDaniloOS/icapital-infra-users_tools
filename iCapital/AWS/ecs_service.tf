@@ -54,6 +54,36 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
   policy_arn = aws_iam_policy.ecs_task_policy.arn
 }
 
+resource "aws_iam_policy" "ecr_access_policy" {
+  name        = "ECRAccessPolicy"
+  description = "Policy de acesso ao ECR"
+  
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Action    = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:DescribeRepositories",
+          "ecr:DescribeImages",
+          "ecr:ListImages",
+        ],
+        Resource  = "*",
+      },
+    ],
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_access_attachment" {
+  role       = aws_iam_role.icapital_task_role.name  # Substitua com o nome da sua role ECS
+  policy_arn = aws_iam_policy.ecr_access_policy.arn
+}
+
+
 #Task definitions
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = "icapital-task"
@@ -113,7 +143,6 @@ resource "aws_lb_target_group" "target_group" {
 
   health_check {
     path                = "/actuator/health"
-    port                = "8080"
     protocol            = "HTTP"
     interval            = 30
     timeout             = 5
