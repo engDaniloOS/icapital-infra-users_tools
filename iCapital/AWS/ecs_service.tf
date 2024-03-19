@@ -90,7 +90,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   network_mode             = "awsvpc"
   cpu                      = 512
   memory                   = 1024
-  requires_compatibilities = ["FARGATE_SPOT"]
+  requires_compatibilities = ["FARGATE"]
 
   execution_role_arn       = aws_iam_role.icapital_task_role.arn  # Usar a role criada acima
   task_role_arn            = aws_iam_role.icapital_task_role.arn      # Usar a role da tarefa criada acima
