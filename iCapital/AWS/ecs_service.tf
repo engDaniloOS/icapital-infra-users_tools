@@ -126,12 +126,28 @@ resource "aws_ecs_task_definition" "task_definition" {
   }
 }
 
+resource "aws_security_group" "lb_security_group" {
+  name        = "lb_security_group_icapital"
+  description = "Security group for the load balancer"
+  vpc_id      = "vpc-0b3d7c2f0a9a183c3" 
+}
+
+resource "aws_security_group_rule" "lb_http_ingress" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = aws_security_group.lb_security_group.id
+  cidr_blocks       = ["0.0.0.0/0"]  # Permitindo tráfego de qualquer lugar, ajuste conforme necessário
+}
+
 resource "aws_lb" "public_lb" {
   name               = "icapital-service-alb"
   internal           = false
   load_balancer_type = "application"
   subnets            = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
   enable_deletion_protection = false
+  security_groups = [aws_security_group.lb_security_group.arn]
 }
 
 resource "aws_lb_target_group" "target_group" {
@@ -140,6 +156,7 @@ resource "aws_lb_target_group" "target_group" {
   protocol = "HTTP"
   target_type = "ip"
   vpc_id   = "vpc-0b3d7c2f0a9a183c3"
+
 
   health_check {
     path                = "/actuator/health"
@@ -161,6 +178,10 @@ resource "aws_lb_listener" "listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target_group.arn
   }
+}
+
+resource "aws_cloudwatch_log_group" "user_tools_log_group" {
+  name = "user_tools"
 }
 
 resource "aws_ecs_service" "service" {
