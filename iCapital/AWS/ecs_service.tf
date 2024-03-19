@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "task_definition" {
       name      = "users_tools",
       image     = data.aws_ecr_repository.icapital_users_tools_ecr.repository_url
       cpu       = 512,
-      memory    = 1024,
+      memory    = 512,
       portMappings = [
         {
           containerPort = 8080,
