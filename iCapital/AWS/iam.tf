@@ -1,5 +1,5 @@
 data "aws_iam_policy" "service_role_policy" {
-  arn = "arn:aws:iam::aws:policy/AmazonECSServiceRolePolicy"
+  arn = "arn:aws:iam::aws:policy/aws-service-role/AmazonECSServiceRolePolicy"
 }
 
 resource "aws_iam_role" "icapital_task_role" {
