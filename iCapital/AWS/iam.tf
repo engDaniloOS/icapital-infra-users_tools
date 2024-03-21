@@ -35,10 +35,6 @@ resource "aws_iam_policy" "ecs_task_policy" {
   })
 }
 
-data "aws_iam_policy" "service_role_policy" {
-  name = "AmazonECSServiceRolePolicy"
-}
-
 resource "aws_iam_policy" "ecr_access_policy" {
   name        = "icapital-ecr-read-policy"
   description = "Policy de acesso ao ECR"
@@ -70,7 +66,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
 
 resource "aws_iam_role_policy_attachment" "service_task_policy_attachment" {
   role       = aws_iam_role.icapital_task_role.name
-  policy_arn = aws_iam_policy.service_role_policy.arn
+  policy_arn = "AmazonECSServiceRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "ecr_task_policy_attachment" {
