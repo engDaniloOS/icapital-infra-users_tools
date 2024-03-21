@@ -1,4 +1,4 @@
-data "aws_iam_policy" "ReadOnlyAccess" {
+data "aws_iam_policy" "service_role_policy" {
   arn = "arn:aws:iam::aws:policy/AmazonECSServiceRolePolicy"
 }
 
