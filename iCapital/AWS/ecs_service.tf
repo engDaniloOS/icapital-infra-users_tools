@@ -3,104 +3,42 @@ data "aws_ecr_repository" "icapital_users_tools_ecr" {
   name = "icapital-users-tools"
 }
 
+data "aws_iam_role" "icapital_task_role" {
+  name = "icapital-task-role"
+}
+
+data "aws_security_group" "cluster_security_group" {
+  name        = "cluster_security_group_icapital"
+}
+
+data "aws_security_group" "lb_security_group" {
+  name        = "lb_security_group_icapital"
+}
+
 resource "aws_ecs_cluster" "icapital_user_tools" {
   name    = "icapital-user-tools"
   
   tags = {
     feat = "icapital-users-tools"
   }
+
+  depends_on = [ data.aws_ecr_repository.icapital_users_tools, data.aws_iam_role.icapital_task_role, data.aws_security_group.cluster_security_group, data.aws_security_group.lb_security_group ]
 }
 
-resource "aws_iam_role" "icapital_task_role" {
-  name = "icapital-task-role"
-  assume_role_policy = jsonencode({
-    Version   = "2012-10-17",
-    Statement = [
-      {
-        Effect    = "Allow",
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com",
-        },
-        Action    = "sts:AssumeRole",
-      },
-    ],
-  })
-
-  tags = {
-    feat = "icapital-users-tools"
-  }
-}
-
-resource "aws_iam_policy" "ecs_task_policy" {
-  name = "icapital-ecs-task-policy"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect    = "Allow",
-        Action    = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-        ],
-        Resource  = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
-  role       = aws_iam_role.icapital_task_role.name
-  policy_arn = aws_iam_policy.ecs_task_policy.arn
-}
-
-resource "aws_iam_policy" "ecr_access_policy" {
-  name        = "icapital-ecr-read-policy"
-  description = "Policy de acesso ao ECR"
-  
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect    = "Allow",
-        Action    = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:DescribeRepositories",
-          "ecr:DescribeImages",
-          "ecr:ListImages",
-        ],
-        Resource  = "*",
-      },
-    ],
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecr_access_attachment" {
-  role       = aws_iam_role.icapital_task_role.name  # Substitua com o nome da sua role ECS
-  policy_arn = aws_iam_policy.ecr_access_policy.arn
-}
-
-
-#Task definitions
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = "icapital-task"
   network_mode             = "awsvpc"
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 256
+  memory                   = 512
   requires_compatibilities = ["FARGATE"]
-
-  execution_role_arn       = aws_iam_role.icapital_task_role.arn  # Usar a role criada acima
-  task_role_arn            = aws_iam_role.icapital_task_role.arn      # Usar a role da tarefa criada acima
+  task_role_arn            = data.aws_iam_role.icapital_task_role.arn
 
   container_definitions = jsonencode([
     {
       name      = "users_tools",
       image     = data.aws_ecr_repository.icapital_users_tools_ecr.repository_url
-      cpu       = 512,
-      memory    = 1024,
+      cpu       = 256,
+      memory    = 512,
       portMappings = [
         {
           containerPort = 8080,
@@ -126,27 +64,13 @@ resource "aws_ecs_task_definition" "task_definition" {
   }
 }
 
-resource "aws_security_group" "lb_security_group" {
-  name        = "lb_security_group_icapital"
-  description = "Security group for the load balancer"
-  vpc_id      = "vpc-0b3d7c2f0a9a183c3" 
-}
-
-resource "aws_security_group_rule" "lb_http_ingress" {
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  security_group_id = aws_security_group.lb_security_group.id
-  cidr_blocks       = ["0.0.0.0/0"]  # Permitindo tráfego de qualquer lugar, ajuste conforme necessário
-}
-
 resource "aws_lb" "public_lb" {
   name               = "icapital-service-alb"
   internal           = false
   load_balancer_type = "application"
   subnets            = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
   enable_deletion_protection = false
+  security_groups = [ data.aws_security_group.lb_security_group.id ]
 }
 
 resource "aws_lb_target_group" "target_group" {
@@ -155,8 +79,7 @@ resource "aws_lb_target_group" "target_group" {
   protocol = "HTTP"
   target_type = "ip"
   vpc_id   = "vpc-0b3d7c2f0a9a183c3"
-
-
+  
   health_check {
     path                = "/actuator/health"
     protocol            = "HTTP"
@@ -189,9 +112,10 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.task_definition.arn
   desired_count   = 1
   launch_type = "FARGATE"
-
+  
   network_configuration {
-    subnets = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
+    subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+    security_groups = [ data.aws_security_group.cluster_security_group.id ]
   }
 
   load_balancer {
