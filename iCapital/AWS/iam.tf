@@ -1,7 +1,3 @@
-data "aws_iam_policy" "service_role_policy" {
-  arn = "arn:aws:iam::aws:policy/aws-service-role/AmazonECSServiceRolePolicy"
-}
-
 resource "aws_iam_role" "icapital_task_role" {
   name = "icapital-task-role"
   assume_role_policy = jsonencode({
@@ -66,11 +62,6 @@ resource "aws_iam_policy" "ecr_access_policy" {
 resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
   role       = aws_iam_role.icapital_task_role.name
   policy_arn = aws_iam_policy.ecs_task_policy.arn
-}
-
-resource "aws_iam_role_policy_attachment" "service_task_policy_attachment" {
-  role       = aws_iam_role.icapital_task_role.name
-  policy_arn = data.aws_iam_policy.service_role_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecr_task_policy_attachment" {
