@@ -30,6 +30,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   memory                   = 512
   requires_compatibilities = ["FARGATE"]
   task_role_arn            = data.aws_iam_role.icapital_task_role.arn
+  execution_role_arn       = data.aws_iam_role.icapital_task_role.arn
 
   container_definitions = jsonencode([
     {
@@ -68,7 +69,7 @@ resource "aws_lb" "public_lb" {
   load_balancer_type = "application"
   subnets            = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
   enable_deletion_protection = false
-  security_groups = [ data.aws_security_group.lb_security_group.id ]
+  # security_groups = [ data.aws_security_group.lb_security_group.id ]
 }
 
 resource "aws_lb_target_group" "target_group" {
@@ -113,7 +114,7 @@ resource "aws_ecs_service" "service" {
   
   network_configuration {
     subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
-    security_groups = [ data.aws_security_group.cluster_security_group.id ]
+    # security_groups = [ data.aws_security_group.cluster_security_group.id ]
   }
 
   load_balancer {
