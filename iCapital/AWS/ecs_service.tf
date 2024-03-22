@@ -113,7 +113,8 @@ resource "aws_ecs_service" "service" {
   launch_type = "FARGATE"
   
   network_configuration {
-    subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+    subnets = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
+    assign_public_ip = true
     security_groups = [ data.aws_security_group.cluster_security_group.id ]
   }
 
