@@ -1,4 +1,3 @@
-# Recurso de dados para acessar o ECR criado em outro arquivo Terraform
 data "aws_ecr_repository" "icapital_users_tools_ecr" {
   name = "icapital-users-tools"
 }
@@ -113,8 +112,6 @@ resource "aws_ecs_service" "service" {
   launch_type = "FARGATE"
   
   network_configuration {
-    # subnets = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
-    # assign_public_ip = true
     subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
     security_groups = [ data.aws_security_group.cluster_security_group.id ]
   }
