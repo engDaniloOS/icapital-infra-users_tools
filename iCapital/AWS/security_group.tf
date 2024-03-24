@@ -27,7 +27,7 @@ resource "aws_security_group_rule" "cluster_http_egress" {
   to_port           = 8080
   protocol          = "tcp"
   security_group_id = aws_security_group.cluster_security_group.id
-  cidr_blocks       = ["0.0.0.0/0"]  # Permitindo tráfego de qualquer lugar, ajuste conforme necessário
+  cidr_blocks       = ["0.0.0.0/0"] 
 }
 
 ##Config do SG do load balancer
@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "lb_http_ingress" {
   to_port           = 80
   protocol          = "tcp"
   security_group_id = aws_security_group.lb_security_group.id
-  cidr_blocks       = ["0.0.0.0/0"]  # Permitindo tráfego de qualquer lugar, ajuste conforme necessário
+  cidr_blocks       = ["0.0.0.0/0"]  
 }
 
 resource "aws_security_group_rule" "lb_http_egress" {
