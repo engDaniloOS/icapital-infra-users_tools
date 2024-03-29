@@ -55,5 +55,5 @@ resource "aws_security_group_rule" "lb_http_egress_https" {
   to_port           = 443
   protocol          = "tcp"
   security_group_id = aws_security_group.lb_security_group.id
-  cidr_blocks       = ["0.0.0.0/0"]  # Permitindo tráfego de qualquer lugar, ajuste conforme necessário
+  cidr_blocks       = ["0.0.0.0/0"]
 }
