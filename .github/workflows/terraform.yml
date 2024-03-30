@@ -2,7 +2,7 @@ name: 'icapital-infra-user-tools-deploy'
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "desenvolvimento" ]
     types: ["closed"]
 
 permissions:
