@@ -10,6 +10,7 @@ resource "aws_s3_bucket" "static_site_users_tools"{
     tags = var.default_tags
 }
 
+##ABC
 ##Configuração para liberar acesso ao público
 resource "aws_s3_bucket_public_access_block" "static_site_users_tools" {
   bucket = aws_s3_bucket.static_site_users_tools.id
