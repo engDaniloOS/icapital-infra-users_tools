@@ -40,3 +40,5 @@ resource "aws_s3_bucket_acl" "static_site_users_tools" {
     aws_s3_bucket_ownership_controls.static_site_users_tools 
   ]
 }
+
+##OK
