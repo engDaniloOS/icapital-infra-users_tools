@@ -2,7 +2,7 @@ name: 'icapital-infra-user-tools-deploy'
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "desenvolvimento" ]
     types: ["closed"]
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest 
     defaults:
       run:
         shell: bash
