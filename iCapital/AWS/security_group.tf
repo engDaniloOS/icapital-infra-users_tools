@@ -2,13 +2,13 @@
 resource "aws_security_group" "cluster_security_group" {
   name        = "cluster_security_group_icapital"
   description = "Security group for the cluster"
-  vpc_id      = "vpc-0b3d7c2f0a9a183c3" 
+  vpc_id      = "vpc-069ead2516e1976ce" 
 }
 
 resource "aws_security_group" "lb_security_group" {
   name        = "lb_security_group_icapital"
   description = "Security group for the load balancer"
-  vpc_id      = "vpc-0b3d7c2f0a9a183c3" 
+  vpc_id      = "vpc-069ead2516e1976ce" 
 }
 
 ##Config do SG do cluster
