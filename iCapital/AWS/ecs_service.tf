@@ -66,7 +66,7 @@ resource "aws_lb" "public_lb" {
   name               = "icapital-service-alb"
   internal           = false
   load_balancer_type = "application"
-  subnets            = ["subnet-0949be2fae98dbcd3", "subnet-07fc7292ce47077d1"]
+  subnets            = ["subnet-0f1ed526ce897d29f", "subnet-00c7dcb6c1044693e"]
   enable_deletion_protection = false
   security_groups = [ data.aws_security_group.lb_security_group.id ]
 }
@@ -112,7 +112,7 @@ resource "aws_ecs_service" "service" {
   launch_type = "FARGATE"
   
   network_configuration {
-    subnets = ["subnet-0f07f205ca006e580", "subnet-04b05459f32d1b31f"]
+    subnets = ["subnet-0f46ffe3d860d67dd", "subnet-02a49991c9a4f72e7"]
     security_groups = [ data.aws_security_group.cluster_security_group.id ]
   }
 
